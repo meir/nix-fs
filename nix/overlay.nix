@@ -1,4 +1,7 @@
 { pkgs, lib, config, ... }:
+let
+  nix-fs-state = pkgs.writeText "nix-fs.json" "";
+in
 {
   options.nix-fs.files = with lib; mkOption {
     type = types.listOf types.submodule {
@@ -19,6 +22,19 @@
   };
 
   config = {
+    environmen.etc."nix-fs.json" = {
+      enabled = true;
+      source = nix-fs-state; 
+    };
 
+    system.activationScripts = {
+      nix-fs = {
+        deps = [ "specialfs" ];
+        text =
+          ''
+
+          '';
+      };
+    };
   };
 }

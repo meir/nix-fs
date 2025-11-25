@@ -3,6 +3,7 @@ package state
 import (
 	"fmt"
 	"os"
+	"path"
 )
 
 type Location struct {
@@ -20,13 +21,16 @@ func (l *Location) CreateLink() error {
 		return err
 	}
 	l.IsDirectory = stat.IsDir()
+	if !l.IsDirectory {
+		destination = path.Dir(destination)
+	}
 
 	err = os.MkdirAll(destination, os.ModePerm)
 	if err != nil {
 		return err
 	}
 
-	return os.Symlink(origin, destination)
+	return os.Symlink(origin, l.Destination)
 }
 
 func (l *Location) RemoveLink() error {
