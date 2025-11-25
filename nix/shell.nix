@@ -8,7 +8,7 @@
 let
   goEnv = mkGoEnv { pwd = ./.; };
   pre-commit-check = pre-commit-hooks.lib.${pkgs.system}.run {
-    src = ./.;
+    src = ./..;
     hooks = {
       gofmt.enable = true;
       goimports = {
