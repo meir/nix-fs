@@ -30,7 +30,7 @@
         }
       );
 
-      nixosModules.nix-fs = args: import ./nix/overlay.nix (args // { inherit inputs; });
+      nixosModules.nix-fs = import ./nix/overlay.nix inputs;
 
       devShells = eachSystem (pkgs: {
         default = pkgs.callPackage ./nix/shell.nix { inherit pre-commit-hooks pkgs; };
