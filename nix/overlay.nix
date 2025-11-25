@@ -1,7 +1,6 @@
 inputs:
 { pkgs, lib, config, ... }:
 let
-  home-folder = lib.getEnv "HOME";
   new-state = pkgs.writeText "nix-fs.json" (builtins.toJSON {
     version = 1;
     time = "2000-01-01T00:00:00Z";
@@ -16,7 +15,7 @@ let
       else
         throw "Either 'source' or 'text' must be provided for file '${name}'";
 
-      destination = home-folder + "/" + name;
+      destination = config.nix-fs.home + "/" + name;
     }) config.nix-fs.files;
   });
 in
@@ -25,6 +24,11 @@ in
     package = mkOption {
       default = pkgs.nix-fs;
       type = types.package;
+    };
+    home = mkOption {
+      type = types.str;
+      default = null;
+      description = "The home directory where files will be managed.";
     };
     files = mkOption {
       type = types.attrsOf (types.submodule {
