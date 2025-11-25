@@ -1,10 +1,27 @@
 { pkgs, lib, config, ... }:
 let
-  nix-fs-state = pkgs.writeText "nix-fs.json" "";
+  home-folder = pkgs.lib.getEnv "HOME";
+  new-state = pkgs.writeText "nix-fs.json" (pkgs.lib.toJSON {
+    version = 1;
+    timestamp = pkgs.lib.currentTimeString;
+    locations = lib.mapAttrsToList (name: file: {
+      source = if file.source != null then
+        file.source
+      else if file.text != null then
+        pkgs.writeTextFile {
+          name = name + "-content";
+          text = file.text;
+        }
+      else
+        throw "Either 'source' or 'text' must be provided for file '${name}'";
+
+      destination = home-folder + "/" + name;
+    }) config.nix-fs.files;
+  });
 in
 {
   options.nix-fs.files = with lib; mkOption {
-    type = types.listOf types.submodule {
+    type = types.attrsOf types.submodule {
       options = {
         source = mkOption {
           type = types.nullOr types.path;
@@ -22,17 +39,12 @@ in
   };
 
   config = {
-    environmen.etc."nix-fs.json" = {
-      enabled = true;
-      source = nix-fs-state; 
-    };
-
     system.activationScripts = {
       nix-fs = {
         deps = [ "specialfs" ];
         text =
           ''
-
+            ${pkgs.nix-fs}/bin/nix-fs --state-file ${new-state} --old-state-file /etc/nix-fs.json
           '';
       };
     };

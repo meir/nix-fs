@@ -32,7 +32,6 @@ func TestStateCompare(t *testing.T) {
 				Locations: []Location{
 					{
 						Origin:      "A",
-						IsDirectory: true,
 						Destination: "B",
 					},
 				},
@@ -46,7 +45,6 @@ func TestStateCompare(t *testing.T) {
 					Action: CREATE,
 					Location: Location{
 						Origin:      "A",
-						IsDirectory: true,
 						Destination: "B",
 					},
 				},
@@ -57,7 +55,6 @@ func TestStateCompare(t *testing.T) {
 				Locations: []Location{
 					{
 						Origin:      "A",
-						IsDirectory: true,
 						Destination: "B",
 					},
 				},
@@ -66,7 +63,6 @@ func TestStateCompare(t *testing.T) {
 				Locations: []Location{
 					{
 						Origin:      "A",
-						IsDirectory: true,
 						Destination: "B",
 					},
 				},
@@ -77,7 +73,6 @@ func TestStateCompare(t *testing.T) {
 					Action: NOOP,
 					Location: Location{
 						Origin:      "A",
-						IsDirectory: true,
 						Destination: "B",
 					},
 				},
@@ -88,7 +83,6 @@ func TestStateCompare(t *testing.T) {
 				Locations: []Location{
 					{
 						Origin:      "B",
-						IsDirectory: true,
 						Destination: "B",
 					},
 				},
@@ -97,7 +91,6 @@ func TestStateCompare(t *testing.T) {
 				Locations: []Location{
 					{
 						Origin:      "A",
-						IsDirectory: true,
 						Destination: "B",
 					},
 				},
@@ -108,7 +101,6 @@ func TestStateCompare(t *testing.T) {
 					Action: DELETE,
 					Location: Location{
 						Origin:      "A",
-						IsDirectory: true,
 						Destination: "B",
 					},
 				},
@@ -116,7 +108,6 @@ func TestStateCompare(t *testing.T) {
 					Action: CREATE,
 					Location: Location{
 						Origin:      "B",
-						IsDirectory: true,
 						Destination: "B",
 					},
 				},
@@ -125,7 +116,10 @@ func TestStateCompare(t *testing.T) {
 	}
 
 	for id, c := range cases {
-		actions := Compare(c.New, c.Old)
+		actions, err := Compare(c.New, c.Old)
+		if err != nil {
+			t.Errorf("[%d] Unexpected error: %s", id, err.Error())
+		}
 
 		if len(actions) != len(c.Expected) {
 			t.Errorf("[%d] len(actions) '%d' != len(expected) '%d'", id, len(actions), len(c.Expected))

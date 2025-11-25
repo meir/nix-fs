@@ -3,6 +3,7 @@ package nixfs
 import (
 	"encoding/json"
 	"os"
+	"time"
 
 	"github.com/meir/nix-fs/pkgs/state"
 )
@@ -35,5 +36,21 @@ func Run(stateFileLocation, oldStateFileLocation string) error {
 		return err
 	}
 
-	return newState.Apply(oldState)
+	err = newState.Apply(oldState)
+	if err != nil {
+		return err
+	}
+
+	return OverwriteState(newState, oldStateFileLocation)
+}
+
+// OverwriteState overwrites the old state file with new one
+func OverwriteState(newState *state.StateFile, stateLocation string) error {
+	newState.LastGeneration = time.Now()
+	data, err := json.MarshalIndent(newState, "", "  ")
+	if err != nil {
+		return nil
+	}
+
+	return os.WriteFile(stateLocation, data, 0644)
 }

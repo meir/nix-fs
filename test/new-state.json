@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "time": "2025-11-25T12:00:00Z",
+  "locations": [
+    {
+      "origin": "/home/human/Documents/flamingo/nix-fs/test/testfile",
+      "destination": "/home/human/Documents/flamingo/nix-fs/test/new"
+    }
+  ]
+}

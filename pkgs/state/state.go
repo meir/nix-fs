@@ -10,7 +10,7 @@ import (
 const STATE_VERSION = 1
 
 type StateFile struct {
-	StateVersion   uint8      `json:"state_version"`
+	StateVersion   uint8      `json:"version"`
 	LastGeneration time.Time  `json:"time"`
 	Locations      []Location `json:"locations"`
 }
@@ -39,18 +39,21 @@ func EmptyStateFile() *StateFile {
 }
 
 func (sf *StateFile) Apply(old *StateFile) error {
-	actions := Compare(sf, old)
+	actions, err := Compare(sf, old)
+	if err != nil {
+		return err
+	}
 
 	for _, action := range actions {
 		switch action.Action {
 		case DELETE:
-			fmt.Println("Deleting link:", action.Location.Destination)
+			fmt.Printf("Deleting link: %s -> %s\n", action.Location.Origin, action.Location.Destination)
 			action.Location.RemoveLink()
 		case CREATE:
-			fmt.Println("Creating link:", action.Location.Destination)
+			fmt.Printf("Creating link: %s -> %s\n", action.Location.Origin, action.Location.Destination)
 			action.Location.CreateLink()
 		case NOOP:
-			fmt.Println("No action for link:", action.Location.Destination)
+			fmt.Printf("No action for link: %s -> %s\n", action.Location.Origin, action.Location.Destination)
 		}
 	}
 

@@ -8,7 +8,6 @@ import (
 
 type Location struct {
 	Origin      string `json:"origin"`
-	IsDirectory bool   `json:"is_directory"`
 	Destination string `json:"destination"`
 }
 
@@ -16,14 +15,19 @@ func (l *Location) CreateLink() error {
 	origin := l.Origin
 	destination := l.Destination
 
-	stat, err := os.Stat(origin)
+	_, err := os.Lstat(destination)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	} else if err == nil {
+		fmt.Println("Link already exists, skipping creation:", destination)
+		return nil
+	}
+
+	_, err = os.Stat(origin)
 	if err != nil {
 		return err
 	}
-	l.IsDirectory = stat.IsDir()
-	if !l.IsDirectory {
-		destination = path.Dir(destination)
-	}
+	destination = path.Dir(destination)
 
 	err = os.MkdirAll(destination, os.ModePerm)
 	if err != nil {
@@ -48,5 +52,5 @@ func (l *Location) RemoveLink() error {
 }
 
 func (l *Location) Compare(other Location) bool {
-	return l.Origin == other.Origin && l.Destination == other.Destination && l.IsDirectory == other.IsDirectory
+	return l.Origin == other.Origin && l.Destination == other.Destination
 }

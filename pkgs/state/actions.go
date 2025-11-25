@@ -1,6 +1,10 @@
 package state
 
-import "golang.org/x/exp/slices"
+import (
+	"os"
+
+	"golang.org/x/exp/slices"
+)
 
 type LinkAction uint8
 
@@ -19,15 +23,24 @@ func sortActions(a Action, b Action) int {
 	return int(a.Action) - int(b.Action)
 }
 
-func Compare(new *StateFile, old *StateFile) []Action {
+func Compare(new *StateFile, old *StateFile) ([]Action, error) {
 	var actions []Action
 
 CreateOrNOOP:
 	for _, locationNew := range new.Locations {
 		for i, locationOld := range old.Locations {
 			if locationNew.Compare(locationOld) {
+				action := NOOP
+
+				stat, err := os.Lstat(locationNew.Destination)
+				if err != nil && !os.IsNotExist(err) {
+					return nil, err
+				} else if os.IsNotExist(err) || stat.Mode()&os.ModeSymlink == 0 {
+					action = CREATE
+				}
+
 				actions = append(actions, Action{
-					Action:   NOOP,
+					Action:   action,
 					Location: locationNew,
 				})
 
@@ -51,5 +64,5 @@ CreateOrNOOP:
 	}
 
 	slices.SortFunc(actions, sortActions)
-	return actions
+	return actions, nil
 }
