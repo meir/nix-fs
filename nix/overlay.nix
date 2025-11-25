@@ -20,22 +20,25 @@ let
   });
 in
 {
-  options.nix-fs.files = with lib; mkOption {
-    type = types.attrsOf types.submodule {
-      options = {
-        source = mkOption {
-          type = types.nullOr types.path;
-          description = "Source path of the file or directory to manage.";
-        };
+  options.nix-fs = {
+    pkg = pkgs.callPackage ./nix-fs.nix { };
+    files = with lib; mkOption {
+      type = types.attrsOf types.submodule {
+        options = {
+          source = mkOption {
+            type = types.nullOr types.path;
+            description = "Source path of the file or directory to manage.";
+          };
 
-        text = mkOption {
-          type = types.nullOr types.str;
-          description = "Content to write to the destination file. If set, 'source' is ignored.";
+          text = mkOption {
+            type = types.nullOr types.str;
+            description = "Content to write to the destination file. If set, 'source' is ignored.";
+          };
         };
       };
+      default = [ ];
+      description = "List of files to manage with nix-fs.";
     };
-    default = [ ];
-    description = "List of files to manage with nix-fs.";
   };
 
   config = {
@@ -47,7 +50,7 @@ in
         ];
         text =
           ''
-            ${pkgs.nix-fs}/bin/nix-fs --state-file ${new-state} --old-state-file /etc/nix-fs.json
+            ${config.nix-fs.pkg}/bin/nix-fs --state-file ${new-state} --old-state-file /etc/nix-fs.json
           '';
       };
     };

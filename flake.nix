@@ -23,14 +23,14 @@
         })
       );
     in
-    {
+    rec {
       packages = eachSystem (pkgs:
         {
           nix-fs = pkgs.callPackage ./nix/nix-fs.nix { };
         }
       );
 
-      nixosModules.nix-fs = import ./nix/overlay.nix;
+      nixosModules.nix-fs = args: import ./nix/overlay.nix;
 
       devShells = eachSystem (pkgs: {
         default = pkgs.callPackage ./nix/shell.nix { inherit pre-commit-hooks pkgs; };
