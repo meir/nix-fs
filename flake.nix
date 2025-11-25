@@ -30,7 +30,12 @@
         }
       );
 
-      nixosModules.nix-fs = args: import ./nix/overlay.nix (args // {
+      nixosModules.nix-fs = {
+        config,
+        lib,
+        pkgs,
+        ...
+      }@args: import ./nix/overlay.nix (args // {
         nix-fs = packages.${args.system}.nix-fs;
       });
 
