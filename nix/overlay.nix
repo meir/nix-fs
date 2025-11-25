@@ -35,11 +35,13 @@ in
         options = {
           source = mkOption {
             type = types.nullOr types.path;
+            default = null;
             description = "Source path of the file or directory to manage.";
           };
 
           text = mkOption {
             type = types.nullOr types.str;
+            default = null;
             description = "Content to write to the destination file. If set, 'source' is ignored.";
           };
         };
