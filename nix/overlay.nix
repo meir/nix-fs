@@ -43,7 +43,6 @@ in
       nix-fs = {
         deps = [
           "etc"
-          "nix"
           "users"
         ];
         text =
