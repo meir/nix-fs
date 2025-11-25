@@ -3,8 +3,8 @@ pkgs.buildGoApplication rec {
   pname = "nix-fs";
   version = lib.readFile ./VERSION;
 
-  pwd = ./.;
-  src = ./.;
+  pwd = ./..;
+  src = ./..;
 
   modules = ./gomod2nix.toml;
 }
