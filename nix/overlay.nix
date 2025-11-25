@@ -42,13 +42,13 @@ in
     };
   };
 
-  nixpkgs.overlays = [
-    (final: prev: {
-      nix-fs = inputs.self.packages.${final.system}.nix-fs;
-    })
-  ];
-
   config = {
+    nixpkgs.overlays = [
+      (final: prev: {
+        nix-fs = inputs.self.packages.${final.system}.nix-fs;
+      })
+    ];
+
     system.activationScripts = {
       nix-fs = {
         deps = [
