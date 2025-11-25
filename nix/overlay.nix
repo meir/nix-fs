@@ -5,7 +5,7 @@ let
     version = 1;
     time = "2000-01-01T00:00:00Z";
     locations = lib.mapAttrsToList (name: file: {
-      source = if (file.source != null) then
+      origin = if (file.source != null) then
         file.source
       else if (file.text != null) then
         "${pkgs.writeTextFile {
