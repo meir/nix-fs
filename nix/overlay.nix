@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, nix-fs, ... }:
 let
   home-folder = lib.getEnv "HOME";
   new-state = pkgs.writeText "nix-fs.json" (pkgs.lib.toJSON {
@@ -21,7 +21,7 @@ let
 in
 {
   options.nix-fs = {
-    pkg = pkgs.callPackage ./nix-fs.nix { };
+    pkg = pkgs.nix-fs;
     files = with lib; mkOption {
       type = types.attrsOf types.submodule {
         options = {
@@ -40,6 +40,12 @@ in
       description = "List of files to manage with nix-fs.";
     };
   };
+
+  nixpkgs.overlays = [
+    (final: prev: {
+      inherit nix-fs;
+    })
+  ];
 
   config = {
     system.activationScripts = {
