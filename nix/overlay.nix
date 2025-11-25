@@ -4,7 +4,7 @@ let
   home-folder = lib.getEnv "HOME";
   new-state = pkgs.writeText "nix-fs.json" (builtins.toJSON {
     version = 1;
-    time = lib.currentTimeString;
+    time = "2000-01-01T00:00:00Z";
     locations = lib.mapAttrsToList (name: file: {
       source = if file.source != null then
         file.source
