@@ -26,15 +26,15 @@
     {
       packages = eachSystem (pkgs:
         {
-          nix-fs = pkgs.callPackage ./nix/pkgs/nix-fs.nix { };
+          nix-fs = pkgs.callPackage ./nix/nix-fs.nix { };
         }
       );
 
       nixosModules.default = args:
-        import ./nix/overlays/nix-fs.nix (args // { inherit inputs; });
+        import ./nix/overlay.nix (args // { inherit inputs; });
 
       devShells = eachSystem (pkgs: {
-        default = pkgs.callPackage ./shell.nix { inherit pre-commit-hooks pkgs; };
+        default = pkgs.callPackage ./nix/shell.nix { inherit pre-commit-hooks pkgs; };
       });
     };
 }

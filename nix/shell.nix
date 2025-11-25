@@ -6,7 +6,7 @@
 }:
 
 let
-  goEnv = mkGoEnv { pwd = ./.; };
+  goEnv = mkGoEnv { pwd = ./..; };
   pre-commit-check = pre-commit-hooks.lib.${pkgs.system}.run {
     src = ./..;
     hooks = {
