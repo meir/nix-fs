@@ -1,10 +1,10 @@
 { pkgs, lib }:
 pkgs.buildGoApplication rec {
   pname = "nix-fs";
-  version = lib.readFile ./VERSION;
+  version = "1.0";
 
   pwd = ./..;
   src = ./..;
 
-  modules = ./gomod2nix.toml;
+  modules = ../gomod2nix.toml;
 }
