@@ -4,7 +4,7 @@ let
   home-folder = lib.getEnv "HOME";
   new-state = pkgs.writeText "nix-fs.json" (pkgs.lib.toJSON {
     version = 1;
-    time = pkgs.lib.currentTimeString;
+    time = lib.currentTimeString;
     locations = lib.mapAttrsToList (name: file: {
       source = if file.source != null then
         file.source
@@ -21,9 +21,12 @@ let
   });
 in
 {
-  options.nix-fs = {
-    package = pkgs.nix-fs;
-    files = with lib; mkOption {
+  options.nix-fs = with lib; {
+    package = mkOption {
+      default = pkgs.nix-fs;
+      type = types.package;
+    };
+    files = mkOption {
       type = types.attrsOf types.submodule {
         options = {
           source = mkOption {
