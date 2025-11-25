@@ -2,7 +2,7 @@ inputs:
 { pkgs, lib, config, ... }:
 let
   home-folder = lib.getEnv "HOME";
-  new-state = pkgs.writeText "nix-fs.json" (lib.toJSON {
+  new-state = pkgs.writeText "nix-fs.json" (builtins.toJSON {
     version = 1;
     time = lib.currentTimeString;
     locations = lib.mapAttrsToList (name: file: {
