@@ -27,7 +27,7 @@ in
       type = types.package;
     };
     files = mkOption {
-      type = types.attrsOf types.submodule {
+      type = types.attrsOf (types.submodule {
         options = {
           source = mkOption {
             type = types.nullOr types.path;
@@ -39,7 +39,7 @@ in
             description = "Content to write to the destination file. If set, 'source' is ignored.";
           };
         };
-      };
+      });
       default = [ ];
       description = "List of files to manage with nix-fs.";
     };
