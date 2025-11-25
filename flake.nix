@@ -1,0 +1,40 @@
+{
+  description = "a small nix flake for filesystem/dotfiles management in go";
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    gomod2nix.url = "github:nix-community/gomod2nix";
+    gomod2nix.inputs.nixpkgs.follows = "nixpkgs";
+    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
+  };
+
+  outputs =
+    { nixpkgs, gomod2nix, pre-commit-hooks, ... }@inputs:
+    let
+      inherit (nixpkgs) lib;
+      eachSystem = function: lib.genAttrs [
+        "x86_64-linux"
+        "aarch64-linux"
+      ]
+      (system:
+        function (import nixpkgs {
+          inherit system;
+          overlays = [ gomod2nix.overlays.default ];
+        })
+      );
+    in
+    {
+      packages = eachSystem (pkgs:
+        {
+          nix-fs = pkgs.callPackage ./nix/pkgs/nix-fs.nix { };
+        }
+      );
+
+      nixosModules.default = args:
+        import ./nix/overlays/nix-fs.nix (args // { inherit inputs; });
+
+      devShells = eachSystem (pkgs: {
+        default = pkgs.callPackage ./shell.nix { inherit pre-commit-hooks pkgs; };
+      });
+    };
+}
