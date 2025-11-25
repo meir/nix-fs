@@ -8,10 +8,10 @@ let
       source = if (file.source != null) then
         file.source
       else if (file.text != null) then
-        pkgs.writeTextFile {
+        "${pkgs.writeTextFile {
           name = name + "-content";
           text = file.text;
-        }
+        }}"
       else
         throw "Either 'source' or 'text' must be provided for file '${name}'";
 
