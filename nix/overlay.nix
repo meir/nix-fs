@@ -1,9 +1,9 @@
 { pkgs, lib, config, ... }:
 let
-  home-folder = pkgs.lib.getEnv "HOME";
+  home-folder = lib.getEnv "HOME";
   new-state = pkgs.writeText "nix-fs.json" (pkgs.lib.toJSON {
     version = 1;
-    timestamp = pkgs.lib.currentTimeString;
+    time = pkgs.lib.currentTimeString;
     locations = lib.mapAttrsToList (name: file: {
       source = if file.source != null then
         file.source
@@ -41,7 +41,11 @@ in
   config = {
     system.activationScripts = {
       nix-fs = {
-        deps = [ "specialfs" ];
+        deps = [
+          "etc"
+          "nix"
+          "users"
+        ];
         text =
           ''
             ${pkgs.nix-fs}/bin/nix-fs --state-file ${new-state} --old-state-file /etc/nix-fs.json

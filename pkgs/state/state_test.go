@@ -70,7 +70,7 @@ func TestStateCompare(t *testing.T) {
 
 			Expected: []Action{
 				{
-					Action: NOOP,
+					Action: CREATE, // CREATE because file A obviously does not exist
 					Location: Location{
 						Origin:      "A",
 						Destination: "B",
@@ -79,6 +79,34 @@ func TestStateCompare(t *testing.T) {
 			},
 		},
 		{ // 4
+			New: &StateFile{
+				Locations: []Location{
+					{
+						Origin:      ".gitignore",
+						Destination: ".gitignore",
+					},
+				},
+			},
+			Old: &StateFile{
+				Locations: []Location{
+					{
+						Origin:      ".gitignore",
+						Destination: ".gitignore",
+					},
+				},
+			},
+
+			Expected: []Action{
+				{
+					Action: CREATE, // CREATE because .gitignore exists, but is not a symlink
+					Location: Location{
+						Origin:      ".gitignore",
+						Destination: ".gitignore",
+					},
+				},
+			},
+		},
+		{ // 5
 			New: &StateFile{
 				Locations: []Location{
 					{
