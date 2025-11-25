@@ -40,7 +40,7 @@ in
           };
         };
       });
-      default = [ ];
+      default = { };
       description = "List of files to manage with nix-fs.";
     };
   };
