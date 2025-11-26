@@ -3,15 +3,16 @@ inputs:
 let
   new-state = pkgs.writeText "nix-fs.json" (builtins.toJSON {
     version = 1;
+    # placeholder time, this will be overwritten by nix-fs when saving the new state
     time = "2000-01-01T00:00:00Z";
     locations = lib.mapAttrsToList (name: file: {
       origin = if (file.source != null) then
         file.source
       else if (file.text != null) then
-        "${pkgs.writeTextFile {
+        pkgs.writeTextFile {
           name = (baseNameOf name) + "-content";
           inherit (file) text;
-        }}"
+        }
       else
         throw "Either 'source' or 'text' must be provided for file '${name}'";
 
