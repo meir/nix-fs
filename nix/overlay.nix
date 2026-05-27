@@ -55,7 +55,7 @@ in
   config = {
     nixpkgs.overlays = [
       (final: prev: {
-        nix-fs = inputs.self.packages.${final.system}.nix-fs;
+        nix-fs = inputs.self.packages.${final.stdenv.hostPlatform.system}.nix-fs;
       })
     ];
 
