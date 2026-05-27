@@ -43,7 +43,7 @@ pkgs.mkShell {
   packages = [
     goEnv
     gomod2nix
-    pkgs.go_1_24
+    pkgs.go
     pkgs.gotools
     pkgs.go-junit-report
     pkgs.go-task
